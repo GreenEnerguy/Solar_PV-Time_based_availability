@@ -1,0 +1,9 @@
+*.xlsx
+*.csv
+*.json
+*.pyc
+*.ipynb
+Read_Availab_Met_Data.py
+__pycache__/
+20*/
+Guarantee_Year/
