@@ -2,7 +2,9 @@
 """
 Created on Sat Oct 17 23:26:59 2020
 
-@author: Rubén Martínez
+@author: Rubén Martínez Fanals
+         https://www.linkedin.com/in/fanals/
+         greenenerguy.me
 """
 import os
 import pandas as pd
