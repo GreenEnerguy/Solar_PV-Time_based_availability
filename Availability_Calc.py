@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-    Created on Fri Oct  9 22:57:47 2020
+Created on Fri Oct  9 22:57:47 2020
 
-    @author: Rubén Martínez https://greenenerguy.me/
+@author: Rubén Martínez Fanals
+         https://www.linkedin.com/in/fanals/
+         https://greenenerguy.me/
 """
 
 import numpy as np
@@ -38,18 +40,20 @@ class Availability:
         Parameters
         ----------
         scb_no_comm : TYPE, optional
-            DESCRIPTION. The default is [].
+            DESCRIPTION. The default is []. Feature intended to manually add intervals of no communications of string
+                                            boxes, yet to be implemented
         interv_no_comm : TYPE, optional
-            DESCRIPTION. The default is [].
+            DESCRIPTION. The default is []. Feature intended to manually add intervals of no communications of inverters,
+                                            yet to be implemented
 
         Returns
         -------
-        None.
+        Output .xlsx spreadsheet named 'filename' including the availability calculation
 
         '''
 
         # I am creating a new dataframe which index is the index from one of the three dataframes calculated
-        # by the functions called when constructing the Availability instance
+        # by the functions called when constructing the Availability instance; the three dataframes have the same index
         self.avail_df = pd.DataFrame(index=self.met_data.index)
         
         # I am creating column 'HGPOAm'; when the average of the readings of the trhee inclined pyranometers
@@ -79,7 +83,8 @@ class Availability:
             self.avail_inv['HPm-I' + str(self.inv_data.columns.get_loc(col)+1)] = \
                           np.where(((self.inv_data[col] > 0) | (self.inv_data[col].isnull())) & (self.avail_df['HGPOAm'] == 1), 1, 0)
 
-        
+
+# The next block of code is intended to manually include intervals of no communications into the availability calculation        
         # If there is any string box without communications, this information is manually given in the variable
         # scb_no_comm, that is a list containing the elements suffering from communication problems
         # Any string box is denominated as "SCB I-N", being I the inverter number they belong to, and N a correlative
@@ -113,7 +118,6 @@ class Availability:
                 self.inv_comms[col] = np.where(self.inv_comms.index.isin(interv) == True, self.inv_comms[col], 0)
             # test.availability_calc(scb_no_comm=['SCB 1-06', 'SCB 5-10'], interv_no_comm=[('2020-10-01 01:00:00', '2020-10-03 19:00:00')])
         
-                
         # I will create a dataframe where each column represents one of the inverters of the project,
         # and I will calculate the availability of the string boxes at inverter level. I will first check whether
         # HGPOAm is 1, in which case I will sum the availability of all string boxes pertaining to that inverter

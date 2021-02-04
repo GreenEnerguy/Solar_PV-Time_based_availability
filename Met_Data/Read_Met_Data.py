@@ -4,7 +4,7 @@ Created on Sat Oct 17 23:26:59 2020
 
 @author: Rubén Martínez Fanals
          https://www.linkedin.com/in/fanals/
-         greenenerguy.me
+         https://greenenerguy.me/
 """
 import os
 import pandas as pd
@@ -18,11 +18,11 @@ def read_met_data(met_data_path, timeframe):
                     to look for this data
     timeframe : String name indicating the folder with the meteorological csv data to be read; e.g. the subfolder 
                 \Met_Data\2020_09\ contains the csv file where the September meteo data is stored. In this instance, 
-                timeframe refers to '2020_09'
+                timeframe refers to the string '2020_09'
 
     Returns
     -------
-    meteo : Pandas Dataframe that contain the clean meteorological data read in the csv file located in 
+    meteo : Pandas Dataframe that contains the clean meteorological data read in the csv file located in 
             \met_data_path\timeframe, the index being day and time
 
     '''
@@ -36,8 +36,11 @@ def read_met_data(met_data_path, timeframe):
             
     file_name = os.path.join(path, met_data)
     project_name = pd.read_csv(file_name).columns[0].split(';')[-1].replace('"', '')
+                                                                    # get project name
+                                                                    # from data columns
     
     # In the following chunk of code I conduct a cleaning of the csv file
+    # first I read the .csv file and skip first two rows due to the configuration of the raw .csv file
     meteo = pd.read_csv(file_name, engine='python', delimiter='\;', skiprows=2)
     meteo = meteo.applymap(lambda x: x.replace('"', '')) # replace " from all the dataframe
     meteo.columns = ['RAD_' + str(i) + ' [W/m2]' for i in range(len(meteo.columns))]

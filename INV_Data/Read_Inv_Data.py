@@ -2,7 +2,9 @@
 """
 Created on Mon Oct 19 23:02:59 2020
 
-@author: Rubén Martínez
+@author: Rubén Martínez Fanals
+         https://www.linkedin.com/in/fanals/
+         https://greenenerguy.me/
 """
 import os
 import pandas as pd
@@ -15,14 +17,16 @@ def read_inv_data(inv_data_path, timeframe):
                     e.g. 'Inv_Data' is the subfolder from current folder where to look for this data
     timeframe : String name indicating the folder where the inverter active power csv data to be read is located;
                 e.g. the subfolder \Inv_Data\2020_09 contains the csv file where the September inverter power data
-                is located. timeframe refers to '2020_09'
+                is located. timeframe refers to the string '2020_09'
 
     Returns
     -------
-    inv : Pandas Dataframe containing the clean active power inverter data read in the csv file located in 
-            \inv_data_path\timeframe, which index is day and time
+    inv : Pandas Dataframe that contains the clean active power inverter data read in the csv file located in 
+            \inv_data_path\timeframe, the index being day and time
     '''
     
+    # In my specific case, the inverter data is stored in the timeframe folder within a .csv file 
+    # that includes the string 'Report' in the file name
     path = os.path.join(os.getcwd(), inv_data_path, timeframe)       
     for file in os.listdir(path):
         if file.endswith('csv') and 'Report' in file:
@@ -33,7 +37,9 @@ def read_inv_data(inv_data_path, timeframe):
                                   pd.read_csv(file_name, delimiter=';', skiprows=1).columns
                                                                     # get project name
                                                                     # from data columns
-    # now I read .csv file and skip first two rows
+    
+    # In the following chunk of code I conduct a cleaning of the csv file
+    # first I read the .csv file and skip first two rows due to the configuration of the raw .csv file
     inv = pd.read_csv(file_name, engine='python', delimiter='\;', skiprows=2)
     inv = inv.applymap(lambda x: x.replace('"', '')) # replace " from all the dataframe
     inv.columns = inv_col_names
@@ -57,11 +63,11 @@ def read_inv_data(inv_data_path, timeframe):
     del inv[inv.columns[0]] 
     inv.drop(inv.columns[num_cols-1:], inplace=True, axis=1)
         
-    start_date = inv.index.values.astype(str)[0][:16] \
-                                .replace('T', '-').replace(':', 'h') # get first measurement item
-    end_date = inv.index.values.astype(str)[-1][:16] \
-                                .replace('T', '-').replace(':', 'h') # get last measurement item
+    # start_date = inv.index.values.astype(str)[0][:16] \
+    #                             .replace('T', '-').replace(':', 'h') # get first measurement item
+    # end_date = inv.index.values.astype(str)[-1][:16] \
+    #                            .replace('T', '-').replace(':', 'h') # get last measurement item
                                 
-    csv_name = os.getcwd() + '\\' + project_name + '_' + start_date + '_' + end_date + '.csv'
+    # csv_name = os.getcwd() + '\\' + project_name + '_' + start_date + '_' + end_date + '.csv'
     
     return inv
